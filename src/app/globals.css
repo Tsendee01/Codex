@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 215 29% 27%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 20% 96%;
+  --secondary-foreground: 215 29% 27%;
+  --muted: 210 16% 93%;
+  --muted-foreground: 215 16% 35%;
+  --accent: 161 44% 80%;
+  --accent-foreground: 214 36% 23%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 142 72% 29%;
+  --success-foreground: 142 70% 92%;
+  --warning: 32 94% 50%;
+  --warning-foreground: 32 92% 20%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 215 29% 27%;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 222 47% 8%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222 47% 9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 215 28% 82%;
+  --primary-foreground: 215 27% 15%;
+  --secondary: 215 27% 18%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 215 27% 18%;
+  --muted-foreground: 215 19% 75%;
+  --accent: 161 44% 24%;
+  --accent-foreground: 162 40% 90%;
+  --destructive: 0 72% 42%;
+  --destructive-foreground: 0 0% 98%;
+  --success: 142 72% 40%;
+  --success-foreground: 142 70% 95%;
+  --warning: 32 90% 55%;
+  --warning-foreground: 32 90% 15%;
+  --border: 222 47% 18%;
+  --input: 222 47% 18%;
+  --ring: 215 28% 82%;
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-offset-background ring-primary;
+  }
+}
+
+@layer components {
+  .app-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .focus-ring {
+    @apply ring-2 ring-offset-2 ring-offset-background ring-primary;
+  }
+}
