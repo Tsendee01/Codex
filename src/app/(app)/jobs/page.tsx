@@ -10,80 +10,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { mockJobCategories, mockJobs } from "@/mock/jobs";
 
-interface Job {
-  id: string;
-  title: string;
-  category: string;
-  price: string;
-  distance: string;
-  rating: number;
-  status: "Шинэ" | "Яаралтай" | "Хугацаа дууссан";
-}
-
-const JOBS: Job[] = [
-  {
-    id: "1",
-    title: "Зураг авалтын туслах",
-    category: "Маркетинг",
-    price: "250,000₮",
-    distance: "3км",
-    rating: 4.9,
-    status: "Шинэ"
-  },
-  {
-    id: "2",
-    title: "Хурлын тэмдэглэл бичигч",
-    category: "Админ",
-    price: "120,000₮",
-    distance: "Офис дээр",
-    rating: 4.5,
-    status: "Яаралтай"
-  },
-  {
-    id: "3",
-    title: "Гэрийн цахилгаан засвар",
-    category: "Техник",
-    price: "180,000₮",
-    distance: "8км",
-    rating: 4.7,
-    status: "Шинэ"
-  },
-  {
-    id: "4",
-    title: "Сошиал контент зохиогч",
-    category: "Маркетинг",
-    price: "320,000₮",
-    distance: "Алсын",
-    rating: 4.8,
-    status: "Шинэ"
-  },
-  {
-    id: "5",
-    title: "Орчуулгын ажил (EN→MN)",
-    category: "Хэл", 
-    price: "210,000₮",
-    distance: "Онлайн",
-    rating: 4.6,
-    status: "Шинэ"
-  },
-  {
-    id: "6",
-    title: "Ивент зохион байгуулах туслах",
-    category: "Үйл ажиллагаа",
-    price: "280,000₮",
-    distance: "5км",
-    rating: 4.4,
-    status: "Яаралтай"
-  }
-];
-
-const categories = ["Бүгд", "Маркетинг", "Админ", "Техник", "Хэл", "Үйл ажиллагаа"] as const;
+type JobCategory = (typeof mockJobCategories)[number];
 
 export default function JobsPage() {
   const reduceMotion = useReducedMotion();
   const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState<typeof categories[number]>("Бүгд");
+  const [category, setCategory] = useState<JobCategory>("Бүгд");
   const [radius, setRadius] = useState("10");
   const [budget, setBudget] = useState("Бүгд");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -102,7 +36,7 @@ export default function JobsPage() {
     return filters;
   }, [category, budget, radius]);
 
-  const filteredJobs = JOBS.filter((job) => {
+  const filteredJobs = mockJobs.filter((job) => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = category === "Бүгд" || job.category === category;
     return matchesSearch && matchesCategory;
@@ -138,12 +72,12 @@ export default function JobsPage() {
             />
           </div>
           <div className="flex items-center gap-3">
-            <Select value={category} onValueChange={(value) => setCategory(value as (typeof categories)[number])}>
+            <Select value={category} onValueChange={(value) => setCategory(value as JobCategory)}>
               <SelectTrigger className="h-11 min-w-[160px] rounded-full border-border/50 bg-background/90">
                 <SelectValue placeholder="Ангилал" />
               </SelectTrigger>
               <SelectContent align="end">
-                {categories.map((item) => (
+                {mockJobCategories.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>
@@ -155,7 +89,7 @@ export default function JobsPage() {
                 <SelectValue placeholder="Төсөв" />
               </SelectTrigger>
               <SelectContent align="end">
-                {['Бүгд', '150к хүртэл', '150к-300к', '300к+'].map((item) => (
+                {["Бүгд", "150к хүртэл", "150к-300к", "300к+"].map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>
@@ -282,8 +216,8 @@ interface FilterSheetProps {
   onOpenChange: (open: boolean) => void;
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  category: typeof categories[number];
-  onCategoryChange: (value: typeof categories[number]) => void;
+  category: JobCategory;
+  onCategoryChange: (value: JobCategory) => void;
   budget: string;
   onBudgetChange: (value: string) => void;
   radius: string;
@@ -315,12 +249,12 @@ function FilterSheet({
           </div>
           <div className="space-y-2">
             <label className="text-body font-medium text-muted-foreground">Ангилал</label>
-            <Select value={category} onValueChange={(value) => onCategoryChange(value as (typeof categories)[number])}>
+            <Select value={category} onValueChange={(value) => onCategoryChange(value as JobCategory)}>
               <SelectTrigger className="h-11 rounded-lg border-border/60 bg-background/80">
                 <SelectValue placeholder="Ангилал" />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((item) => (
+                {mockJobCategories.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>
@@ -335,7 +269,7 @@ function FilterSheet({
                 <SelectValue placeholder="Төсөв" />
               </SelectTrigger>
               <SelectContent>
-                {['Бүгд', '150к хүртэл', '150к-300к', '300к+'].map((item) => (
+                {["Бүгд", "150к хүртэл", "150к-300к", "300к+"].map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>

@@ -2,51 +2,20 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { MessageCircle, Paperclip, Search, Send } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-const threads = [
-  {
-    id: "1",
-    name: "Г.Цэнгүүн",
-    role: "Гүйцэтгэгч",
-    lastMessage: "Сүүлийн фото багц илгээгдлээ.",
-    time: "Өнөөдөр 13:24",
-    unread: 2
-  },
-  {
-    id: "2",
-    name: "А.Баярмаа",
-    role: "Захиалагч",
-    lastMessage: "Баярлалаа, баталгаажууллаа.",
-    time: "Өчигдөр",
-    unread: 0
-  },
-  {
-    id: "3",
-    name: "Team MN UI",
-    role: "Систем",
-    lastMessage: "Нэхэмжлэх шинэчлэгдлээ.",
-    time: "2 өдрийн өмнө",
-    unread: 0
-  }
-];
-
-const messages = [
-  { id: "m1", sender: "Та", content: "Сайн байна уу, зураг авалтын байршлыг баталгаажуулна уу?", time: "09:50" },
-  { id: "m2", sender: "Г.Цэнгүүн", content: "Сайн байна уу! 11:00 цагт студид бэлэн байна.", time: "09:53" },
-  { id: "m3", sender: "Та", content: "Гайхалтай, хэрэгцээт хэрэгслийг бэлдээрэй.", time: "09:55" },
-  { id: "m4", sender: "Г.Цэнгүүн", content: "Мэдээж. Сүүлийн фото багц илгээгдлээ.", time: "13:24" }
-];
+import { mockMessages, mockThreads } from "@/mock/messages";
 
 export default function MessagesPage() {
-  const [activeThread, setActiveThread] = useState(threads[0].id);
+  const [activeThread, setActiveThread] = useState(mockThreads[0]?.id ?? "");
   const reduceMotion = useReducedMotion();
+
+  const activeThreadName = useMemo(() => mockThreads.find((thread) => thread.id === activeThread)?.name ?? "", [activeThread]);
 
   return (
     <section className="space-y-8">
@@ -56,7 +25,7 @@ export default function MessagesPage() {
           <p className="text-body text-muted-foreground">Харилцаагаа нэг дороос удирдаж, санал солилцоогоо хурдлуул.</p>
         </div>
         <Badge variant="mint" className="w-max">
-          <MessageCircle className="mr-2 h-4 w-4" /> 5 идэвхтэй чат
+          <MessageCircle className="mr-2 h-4 w-4" /> {mockThreads.length} идэвхтэй чат
         </Badge>
       </div>
 
@@ -67,14 +36,12 @@ export default function MessagesPage() {
             <Input placeholder="Харилцагч хайх…" className="h-10 rounded-full border-none bg-muted/40" />
           </div>
           <div className="flex flex-col gap-1 p-2">
-            {threads.map((thread) => (
+            {mockThreads.map((thread) => (
               <button
                 key={thread.id}
                 onClick={() => setActiveThread(thread.id)}
                 className={`group flex w-full flex-col gap-1 rounded-xl px-4 py-3 text-left transition-all duration-200 ease-premium ${
-                  thread.id === activeThread
-                    ? "bg-accent/30 text-foreground shadow-card"
-                    : "text-muted-foreground hover:bg-muted/40"
+                  thread.id === activeThread ? "bg-accent/30 text-foreground shadow-card" : "text-muted-foreground hover:bg-muted/40"
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -92,7 +59,7 @@ export default function MessagesPage() {
         <div className="relative flex h-full flex-col">
           <header className="flex items-center justify-between border-b border-border/60 px-6 py-5">
             <div>
-              <h2 className="text-heading-3 text-foreground">{threads.find((thread) => thread.id === activeThread)?.name}</h2>
+              <h2 className="text-heading-3 text-foreground">{activeThreadName}</h2>
               <p className="text-body-sm text-muted-foreground">Гүйцэтгэгч • Сүүлийн холболт 3 минутын өмнө</p>
             </div>
             <Button variant="outline" size="sm">
@@ -100,16 +67,14 @@ export default function MessagesPage() {
             </Button>
           </header>
           <div className="flex-1 space-y-4 overflow-y-auto px-6 py-6">
-            {messages.map((message, index) => (
+            {mockMessages.map((message, index) => (
               <motion.div
                 key={message.id}
                 initial={reduceMotion ? undefined : { opacity: 0.85, scale: 0.98 }}
                 animate={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1], delay: index * 0.05 }}
                 className={`max-w-[80%] rounded-2xl px-5 py-3 text-body shadow-card ${
-                  message.sender === "Та"
-                    ? "ml-auto bg-primary text-primary-foreground"
-                    : "bg-muted/50 text-foreground"
+                  message.sender === "Та" ? "ml-auto bg-primary text-primary-foreground" : "bg-muted/50 text-foreground"
                 }`}
               >
                 <p>{message.content}</p>

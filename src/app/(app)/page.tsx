@@ -5,71 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { messages } from "@/lib/i18n";
-
-const statCards = [
-  {
-    title: "Нийт ажлын тоо",
-    value: "24",
-    trend: "+12%",
-    description: "Сүүлийн 7 хоногоор",
-    sparkline: "from-accent/70 via-accent/40 to-transparent"
-  },
-  {
-    title: "Идэвхтэй төслүүд",
-    value: "6",
-    trend: "+2",
-    description: "Гүйцэтгэж буй",
-    sparkline: "from-primary/60 via-primary/30 to-transparent"
-  },
-  {
-    title: "Шинэ саналууд",
-    value: "9",
-    trend: "+4",
-    description: "Өнөөдөр орсон",
-    sparkline: "from-support/80 via-support/40 to-transparent"
-  },
-  {
-    title: "Дундаж үнэлгээ",
-    value: "4.8",
-    trend: "0.2",
-    description: "Ажил гүйцэтгэгч",
-    sparkline: "from-muted/90 via-muted/40 to-transparent"
-  }
-] as const;
-
-const recentJobs = [
-  {
-    id: "1",
-    title: "Зургийн студи цэвэрлэх",
-    date: "Өчигдөр",
-    price: "180,000₮",
-    status: "Хяналтанд"
-  },
-  {
-    id: "2",
-    title: "Контент зураг авах туслалцаа",
-    date: "2 өдрийн өмнө",
-    price: "250,000₮",
-    status: "Шинэ"
-  }
-];
-
-const newOffers = [
-  {
-    id: "1",
-    name: "Г.Цэнгүүн",
-    job: "Ил захидал хүргэлт",
-    price: "90,000₮",
-    time: "3 цагийн өмнө"
-  },
-  {
-    id: "2",
-    name: "А.Баярмаа",
-    job: "Нягтлангийн тайлан",
-    price: "320,000₮",
-    time: "5 цагийн өмнө"
-  }
-];
+import { dashboardOffers, dashboardRecentJobs, dashboardStats } from "@/mock/dashboard";
 
 export default function DashboardPage() {
   const reduceMotion = useReducedMotion();
@@ -110,7 +46,7 @@ export default function DashboardPage() {
       </header>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {statCards.map((card) => (
+        {dashboardStats.map((card) => (
           <motion.div
             key={card.title}
             initial={reduceMotion ? undefined : { opacity: 0, y: 12 }}
@@ -155,10 +91,10 @@ export default function DashboardPage() {
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentJobs.length === 0 ? (
+            {dashboardRecentJobs.length === 0 ? (
               <EmptyState message="Одоогоор мэдээлэл алга." description="Шинэ ажил үүсгэж эхлэх үү?" />
             ) : (
-              recentJobs.map((job) => (
+              dashboardRecentJobs.map((job) => (
                 <div
                   key={job.id}
                   className="grid gap-2 rounded-xl border border-border/40 bg-background/60 px-4 py-3 transition-colors duration-200 ease-premium hover:border-border"
@@ -188,10 +124,10 @@ export default function DashboardPage() {
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            {newOffers.length === 0 ? (
+            {dashboardOffers.length === 0 ? (
               <EmptyState message="Одоогоор мэдээлэл алга." description="Ажлын санал ирэхийг түр хүлээнэ үү." />
             ) : (
-              newOffers.map((offer) => (
+              dashboardOffers.map((offer) => (
                 <div
                   key={offer.id}
                   className="flex items-center justify-between gap-3 rounded-xl border border-border/40 bg-background/60 px-4 py-3"

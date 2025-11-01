@@ -11,26 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { messages } from "@/lib/i18n";
-
-const skills = ["Контент бүтээх", "Маркетинг", "Photoshop", "Видеоны монтаж", "Багийн удирдлага"];
-const history = [
-  { id: "1", title: "Сошиал контент зураг авалт", status: "Дууссан", rating: 4.8 },
-  { id: "2", title: "Подкаст бичлэгийн засвар", status: "Явагдаж байна", rating: 5 }
-];
-const reviews = [
-  {
-    id: "r1",
-    author: "А.Баярмаа",
-    job: "Сошиал контент",
-    comment: "Хугацаандаа дуусгаж, маш мэргэжлийн хандлага гаргасан."
-  },
-  {
-    id: "r2",
-    author: "Г.Цэнгүүн",
-    job: "Видео монтаж",
-    comment: "Хүссэн загварын дагуу маш хурдан, чанартай хийсэн."
-  }
-];
+import { mockJobHistory, mockReviews, mockSkills } from "@/mock/profile";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"jobs" | "reviews">("jobs");
@@ -68,7 +49,7 @@ export default function ProfilePage() {
                 <MapPin className="h-4 w-4" /> Улаанбаатар, Монгол
               </div>
               <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
+                {mockSkills.map((skill) => (
                   <Badge key={skill} variant="mint" className="text-body-sm">
                     {skill}
                   </Badge>
@@ -101,7 +82,7 @@ export default function ProfilePage() {
               className="space-y-4"
             >
               {activeTab === "jobs"
-                ? history.map((item) => (
+                ? mockJobHistory.map((item) => (
                     <Card key={item.id} className="bg-background/70">
                       <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -114,7 +95,7 @@ export default function ProfilePage() {
                       </CardHeader>
                     </Card>
                   ))
-                : reviews.map((review) => (
+                : mockReviews.map((review) => (
                     <Card key={review.id} className="bg-background/70">
                       <CardHeader>
                         <CardTitle className="text-heading-3">{review.author}</CardTitle>
