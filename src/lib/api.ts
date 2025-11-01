@@ -1,6 +1,13 @@
 import axios, { AxiosHeaders } from "axios";
 
-import { getStoredToken, normalizeError } from "@/lib/utils";
+import { normalizeAxiosError, type NormalizedError } from "@/lib/errors";
+import { getStoredToken } from "@/lib/utils";
+
+type TokenResolver = () => string | null;
+type UnauthorizedCallback = (error: NormalizedError) => void;
+
+let resolveToken: TokenResolver = getStoredToken;
+let handleUnauthorized: UnauthorizedCallback | null = null;
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE,
@@ -8,7 +15,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = getStoredToken();
+  const token = resolveToken?.() ?? null;
 
   if (token) {
     const headers = config.headers ?? {};
@@ -27,7 +34,23 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(normalizeError(error))
+  (error) => {
+    const normalized = normalizeAxiosError(error);
+
+    if (normalized.status === 401) {
+      handleUnauthorized?.(normalized);
+    }
+
+    return Promise.reject(normalized);
+  }
 );
+
+export function setAuthTokenGetter(getter: TokenResolver | null) {
+  resolveToken = getter ?? getStoredToken;
+}
+
+export function setUnauthorizedHandler(handler: UnauthorizedCallback | null) {
+  handleUnauthorized = handler;
+}
 
 export type ApiClient = typeof api;
