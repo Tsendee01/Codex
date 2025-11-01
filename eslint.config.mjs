@@ -1,18 +1,32 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import path from "node:path";
 
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
+import { FlatCompat } from "@eslint/eslintrc";
+import prettierConfig from "eslint-config-prettier";
 
-export default eslintConfig;
+const compat = new FlatCompat({
+  baseDirectory: path.resolve(process.cwd())
+});
+
+const config = [
+  ...compat.extends("next", "next/core-web-vitals", "next/typescript"),
+  prettierConfig,
+  {
+    files: ["**/*.{ts,tsx,js,jsx}"],
+    rules: {
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "import/order": [
+        "error",
+        {
+          groups: [["builtin", "external"], ["internal"], ["parent", "sibling", "index"]],
+          "newlines-between": "always",
+          alphabetize: { order: "asc", caseInsensitive: true }
+        }
+      ]
+    }
+  },
+  {
+    ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
+  }
+];
+
+export default config;
