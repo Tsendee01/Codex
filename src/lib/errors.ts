@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { MockApiError } from "@/mock/error";
 
 export type FieldErrors = Record<string, string | string[] | undefined>;
 
@@ -9,69 +9,32 @@ export type NormalizedError = {
   isNetworkError?: boolean;
 };
 
-function extractFieldErrors(payload: unknown): FieldErrors | undefined {
-  if (!payload || typeof payload !== "object") {
-    return undefined;
-  }
-
-  const possible = payload as Record<string, unknown>;
-  const errors = possible.errors ?? possible.details ?? possible.fieldErrors;
-
-  if (!errors || typeof errors !== "object") {
-    return undefined;
-  }
-
-  return Object.entries(errors as Record<string, unknown>).reduce<FieldErrors>((acc, [key, value]) => {
-    if (value == null) {
-      return acc;
-    }
-
-    if (Array.isArray(value)) {
-      acc[key] = value.map((item) => String(item));
-      return acc;
-    }
-
-    acc[key] = String(value);
-    return acc;
-  }, {});
-}
-
 export function normalizeAxiosError(error: unknown): NormalizedError {
   if (typeof error === "string") {
     return { message: error };
   }
 
-  if (error instanceof Error && !(error as AxiosError).isAxiosError) {
+  if (error instanceof MockApiError) {
+    return {
+      message: error.message,
+      status: error.status,
+      fieldErrors: error.fieldErrors
+    };
+  }
+
+  if (error instanceof Error) {
     return { message: error.message };
   }
 
-  const axiosError = error as AxiosError<{
-    message?: string;
-    error?: string;
-    errors?: FieldErrors;
-    details?: FieldErrors;
-    fieldErrors?: FieldErrors;
-  }>;
-
-  if (axiosError?.isAxiosError) {
-    const isNetworkError = axiosError.code === "ERR_NETWORK" || axiosError.message === "Network Error";
-    const payload = axiosError.response?.data;
-    const messageFromPayload = payload?.message ?? payload?.error;
-    const status = axiosError.response?.status;
-
-    if (isNetworkError || (!status && axiosError.message)) {
+  if (error && typeof error === "object") {
+    const possible = error as { message?: string; status?: number; fieldErrors?: FieldErrors };
+    if (possible.message) {
       return {
-        message: "Сүлжээний алдаа. Дахин оролдоно уу.",
-        status,
-        isNetworkError: true
+        message: possible.message,
+        status: possible.status,
+        fieldErrors: possible.fieldErrors
       };
     }
-
-    return {
-      message: messageFromPayload ?? axiosError.message ?? "Алдаа гарлаа",
-      status,
-      fieldErrors: extractFieldErrors(payload)
-    };
   }
 
   return { message: "Тодорхойгүй алдаа гарлаа" };

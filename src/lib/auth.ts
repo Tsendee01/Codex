@@ -1,4 +1,5 @@
-import { api } from "@/lib/api";
+import type { LoginResponse, RegisterResponse } from "@/mock/auth";
+import { mockLogin, mockLogout, mockMe, mockRegister } from "@/mock/auth";
 
 export type AuthUser = {
   id: string;
@@ -18,34 +19,18 @@ export type RegisterPayload = {
   password: string;
 };
 
-type LoginResponse = {
-  access_token: string;
-  user: AuthUser;
-};
-
-type RegisterResponse = {
-  id: string;
-};
-
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
-  const response = await api.post<LoginResponse>("/auth/login", payload);
-  return response.data;
+  return mockLogin(payload);
 }
 
 export async function register(payload: RegisterPayload): Promise<RegisterResponse> {
-  const response = await api.post<RegisterResponse>("/auth/register", payload);
-  return response.data;
+  return mockRegister(payload);
 }
 
 export async function me(): Promise<AuthUser> {
-  const response = await api.get<AuthUser>("/auth/me");
-  return response.data;
+  return mockMe();
 }
 
 export async function logout(): Promise<void> {
-  try {
-    await api.post("/auth/logout");
-  } catch {
-    // Allow graceful fallback for APIs without logout endpoint.
-  }
+  return mockLogout();
 }
