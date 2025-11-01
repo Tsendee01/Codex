@@ -35,7 +35,7 @@ export const messages: Record<SupportedLocale, LocaleMessages> = {
     sidebar: {
       items: [
         { label: "Тойм", href: "/" },
-        { label: "Ажил хайх", href: "/search" },
+        { label: "Ажил хайх", href: "/jobs" },
         { label: "Ажил үүсгэх", href: "/jobs/new" },
         { label: "Мессеж", href: "/messages" },
         { label: "Профайл", href: "/profile" }
